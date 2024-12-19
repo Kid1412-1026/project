@@ -1,0 +1,304 @@
+/*Reminder: CSS styling might be override by other CSS styling*/
+
+/*-----------------------------------------------
+    Styling for <body>
+-----------------------------------------------*/
+body {
+    background-color: #f0f0f0;
+    color: #000000;
+    font-family: Helvetica, san-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/*-----------------------------------------------
+    Styling for <footer>
+-----------------------------------------------*/
+footer {
+    overflow: hidden;
+    text-align: center;
+    width: 100%;
+    background-color: #828282;
+    color: #F2F2F2;
+    margin: 0;
+}
+
+/*-----------------------------------------------
+    Styling for <div> class header
+-----------------------------------------------*/
+.header {
+	background: url('../img/banner.png') center/cover no-repeat;
+    height: 250px; 
+    text-align: center;
+	color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 25px;
+    -webkit-text-stroke: 1.2px#000000;
+}
+
+
+/*-----------------------------------------------
+    Styling for <nav> class topNav
+-----------------------------------------------*/
+.topNav {   
+    overflow: hidden;
+    background-color: #828282;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/*-----------------------------------------------
+    Styling for <nav> class topNav 
+    for links on the tabs
+-----------------------------------------------*/
+.topNav a.tabs { 
+    float: left;
+    display: block;
+    color: #F2F2F2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/*-----------------------------------------------
+    Styling for <nav> class topNav for 
+    showing tab is currently selected
+-----------------------------------------------*/
+.topNav a.active {  
+    float: left;
+    display: block;
+    background-color: #E5D3B3;
+    color: #000000;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/*-----------------------------------------------
+    Styling for <nav> class topNav for 
+    login and logout tabs
+-----------------------------------------------*/
+.topNav a.login, a.logout {
+    float: right;
+    display: block;
+    color: #F2F2F2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/*-----------------------------------------------
+    Styling for <nav> class topNav for showing 
+    login and logout tab is currently selected
+-----------------------------------------------*/
+.topNav a.loginactive, a.logoutactive {
+    float: right;
+    display: block;
+    background-color: #E5D3B3;
+    color: #000000;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/*-----------------------------------------------
+    Styling for <nav> class topNav for 
+    showing tabs are currently hovered
+-----------------------------------------------*/
+.topNav a.tabs:hover, a.active:hover, a.icon:hover, a.login:hover, a.logout:hover {   
+    background-color: #f0b35e;
+    color: #000000;
+}
+
+/*-----------------------------------------------
+    Styling for <div> class pageTitle in <main> 
+-----------------------------------------------*/
+.pageTitle {
+    color: #000000;
+    font-family: Helvetica, san-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 50px;
+    padding-top: 5px;
+}
+
+/*-----------------------------------------------
+    Styling for <div> class pageTitle for <h1> 
+-----------------------------------------------*/
+.pageTitle h1{
+    text-align: center;
+}
+
+
+/*----------------------------------------------------
+    Styling for <div> class info in <main> to
+    make sure that all content inside this <div>
+    is centered and have flex
+----------------------------------------------------*/
+.info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+/*----------------------------------------------------
+    Styling for <div> class briefInfo to create a
+    box to display brief info about the system and
+    its services
+----------------------------------------------------*/
+.briefInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 5px;
+    border: 0px;
+    padding: 0px;
+    text-align: center;
+    background-color: #D9DADB;
+    color: black;
+    width: 200px;
+    height: 208px;
+    transition: background-color 0.1s, color 0.1s;
+}
+
+/*----------------------------------------------------
+    Styling for <div> class briefInfo for indicating 
+    that this element is currently hovered
+----------------------------------------------------*/
+.briefInfo:hover {
+    background-color: #f0b35e;
+    color: white;
+}
+
+/*-------------------------------------------------------
+    Styling for <div> class briefInfo for <p> element
+-------------------------------------------------------*/
+.briefInfo p {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 20px;
+}
+
+.option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.insertRoom {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.updateRoom {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.formButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/*---------------------------------------------------
+    Styling for <table> id adjustable
+---------------------------------------------------*/
+#adjustable {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*---------------------------------------------------
+    Styling for <table> id adjustable for 
+    <td> and <th> elements
+---------------------------------------------------*/
+#adjustable td, #adjustable th {
+	border: 1px solid #616161;
+	padding: 8px;
+    text-align: center;
+}
+
+#adjustable tr:nth-child(even){background-color: #D9DADB;}
+#adjustable tr:hover {background-color: #C8B4BA;}
+
+#adjustable th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+    background-color: #f08f20;
+	color: black;
+}
+
+#adjustable td {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	color: black;
+}
+
+#roomForm {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#roomForm col {
+    background-color: #f08f20;
+}
+
+#roomForm td{
+    padding: 8px;
+}
+
+#roomStatus {
+    width: 169px;
+}
+
+a {
+    text-decoration: none;
+}
+
+/*----------------------------------------------------
+    Styling for resized pages or 
+    for mobile phone screen
+----------------------------------------------------*/
+@media screen and (max-width: 720px) {  
+    /*----------------------------------------------------
+        Styling for <div> class briefInfo when pages
+        is resized
+    ----------------------------------------------------*/
+    .briefInfo {
+        width: 50%;
+    }
+
+    /*-------------------------------------------------------
+        Styling for <div> class briefInfo for <p> elements
+        when pages is resized
+    -------------------------------------------------------*/
+    .briefInfo p {
+        font-size: 90%;
+    }
+
+    /*-------------------------------------------------------
+        Styling for <footer> when pages is resized 
+    -------------------------------------------------------*/
+    footer {
+        position: fixed;
+        bottom: 0;
+    }
+}
+
