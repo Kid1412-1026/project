@@ -22,6 +22,13 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, mysqli
 
+      - name: Verify composer.json
+        run: |
+          if [ ! -f composer.json ]; then
+            echo "Error: composer.json not found in the root directory."
+            exit 1
+          fi
+
       - name: Install Dependencies
         run: composer install
 
