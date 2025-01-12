@@ -2,45 +2,47 @@
 include('include/config.php');
 session_start();
 
-// Variables
-$cust_Name = "";
-$cust_Phone_No = "";
+// Check if the user is logged in
+if (!isset($_SESSION["UID"])) {
+    echo "You must be logged in to create a profile. Please <a href='login.php'>log in</a>.";
+    exit();
+}
 
+// Initialize variables
+$cust_Name = $cust_Phone_No = "";
+
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $cust_Name = $_POST["custName"];
-    $cust_Phone_No = $_POST["custPhoneNo"];
+    // Sanitize inputs
+    $cust_Name = mysqli_real_escape_string($conn, trim($_POST["custName"]));
+    $cust_Phone_No = mysqli_real_escape_string($conn, trim($_POST["custPhoneNo"]));
 
-$select = "SELECT userid FROM user WHERE userid=".$_SESSION["UID"];
-
-
-    $result = mysqli_query($conn, $select);
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $userid = $row["userid"];
+    // Ensure valid phone number format
+    if (!preg_match('/^\d{10,15}$/', $cust_Phone_No)) {
+        echo "Please enter a valid phone number (10-15 digits). <br>";
+        exit();
     }
 
-    $sql = "INSERT INTO customer (cust_Name, cust_Phone_No, userid)
-        VALUES ('" . $cust_Name . "', '" . $cust_Phone_No . "', '" . $userid . "')";
+    // Get user ID from session
+    $userid = $_SESSION["UID"];
 
-    $status = insertTo_DBTable($conn, $sql);
+    // Prepare the insert query
+    $stmt = $conn->prepare("INSERT INTO customer (cust_Name, cust_Phone_No, userid) VALUES (?, ?, ?)");
+    $stmt->bind_param("ssi", $cust_Name, $cust_Phone_No, $userid);
 
-    if ($status) {
-        echo "Form data saved successfully! <br>";
-        echo '<a href="profile.php">Back</a>';
+    // Execute the query and check for success
+    if ($stmt->execute()) {
+        echo "Profile created successfully! <br>";
+        echo '<a href="profile.php">Go to profile</a>';
     } else {
-        echo '<a href="profile.php">Back</a>';
+        echo "Error: " . $stmt->error . "<br>";
+        echo '<a href="profile_create.php">Try again</a>';
     }
+
+    // Close the statement
+    $stmt->close();
 }
+
+// Close the database connection
 mysqli_close($conn);
-
-// Function to insert database table
-function insertTo_DBTable($conn, $sql)
-{
-    if (mysqli_query($conn, $sql)) {
-        return true;
-    } else {
-        echo "Error: " . $sql . ":" . mysqli_error($conn) . "<br>";
-        return false;
-    }
-}
 ?>
