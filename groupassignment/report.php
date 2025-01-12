@@ -14,25 +14,23 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <style>
-
-        .row {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */ 
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .col-left {
+        .header {
             text-align: center;
-            padding: 15px;
-            flex: 3; /* Adjust the flex property to allocate more width */
-        }
-
-        .col-right {
-            flex: 2;
-            padding: 15px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .row {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-around;
             align-items: flex-start;
             margin: 20px;
@@ -46,35 +44,36 @@
             margin: 10px;
         }
 
-        .form-container {
-            width: 100%;
+        .col-left {
+            flex: 3;
+        }
+
+        .col-right {
+            flex: 2;
+            text-align: center;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            
         }
 
         th, td {
-            padding: 10px; /* Decreased padding for labels and inputs */
+            padding: 10px;
             text-align: left;
-            border: 1px solid rgba(0, 0, 0, 0.1); /* Thin line border with reduced opacity */
-            border-radius: 8px; /* Curved corners */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         th {
-            width: 30%; /* Adjusted width for labels */
-            background-color: #fff;
-            color: black;
-            
+            width: 30%;
+            background-color: #f9f9f9;
         }
 
         td {
-            width: 70%; /* Adjusted width for inputs */
+            width: 70%;
             background-color: #fff;
-            
         }
 
         .saveButton {
@@ -84,110 +83,105 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .saveButton:hover {
             background-color: #45a049;
         }
 
-        input {
-        width: 100%;
-        padding: 8px;
-        border: none;
-        border-radius: 8px;
-        box-sizing: border-box;
-        outline: none; /* Remove outline on focus */
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
         }
 
         textarea {
-        width: 100%;
-        height: 100px; /* Adjust the height as needed */
-        padding: 8px;
-        border: none;
-        border-radius: 8px;
-        box-sizing: border-box;
-        outline: none;
-        resize: none; /* Disable textarea resizing */
-    }
+            height: 100px;
+            resize: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .contact-item {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="header">
-        <h1>Meeting Room Booking System</h1>  
+            <h1>Meeting Room Booking System</h1>
         </div>
     </header>
 
     <nav class="topNav" id="topNav">
         <?php include("include/navMenu.php"); ?>
     </nav>
+
     <div class="greeting">
-        <h1 style='text-align: center'>Report Form</h>
+        <h1 style="text-align: center;">Report Form</h1>
     </div>
+
     <div class="row"> 
+        <!-- Left Column: Form -->
         <div class="col-left"> 
             <form method="POST" action="report_action.php" id="reportform" class="form-container">
                 <table>
                     <tr>
                         <th>Name</th>
-                        <td><input name="reportname" type="text"></td>
+                        <td><input name="reportname" type="text" required></td>
                     </tr>
-                </table>
-
-                <table>
                     <tr>
                         <th>Email</th>
-                        <td><input name="reportemail" type="email"></td>
+                        <td><input name="reportemail" type="email" required></td>
                     </tr>
-                </table>
-
-                <table>
                     <tr>
                         <th>Message</th>
-                        <td><textarea name="reportmsg"></textarea></td>
+                        <td><textarea name="reportmsg" required></textarea></td>
                     </tr>
                 </table>
                 <button class="saveButton" type="submit">Submit Report</button>
-                
             </form>
         </div> 
+
+        <!-- Right Column: Contact Information -->
         <div class="col-right"> 
-            <h2 style="text-align: center; margin-top: -10px;">Contact Us</h2>
-            <br>
-            <i class="fa fa-envelope"> meetingroom@iluv.ums.edu.my</i>
-            <br><br>
-            <i class="fa fa-phone"> 012-3456789</i>
-            <br><br>
-            <i class="fa fa-map-marker"> UMS</i>
-            <br><br>
+            <h2>Contact Us</h2>
+            <div class="contact-item">
+                <i class="fa fa-envelope"></i> meetingroom@iluv.ums.edu.my
+            </div>
+            <div class="contact-item">
+                <i class="fa fa-phone"></i> 012-3456789
+            </div>
+            <div class="contact-item">
+                <i class="fa fa-map-marker"></i> UMS
+            </div>
         </div> 
     </div>
 
-
-
-    <br><br><br>
-
     <footer>
-        <h3>@ KK34703 Web Engineering Group Assignment (Group 14) </h3>
+        <h3>@ KK34703 Web Engineering Group Assignment (Group 14)</h3>
     </footer>
 
     <script>
-    // Function to show an alert popup
-    function alertPopup(message, type) {
-        if (type === 'success') {
-            alert(message);
-        } else {
-            alert(message);
-        }
-    }
-
-    // Call the alertPopup function with PHP variables
-    alertPopup("<?php echo $_SESSION['popupMessage']; ?>", "<?php echo $_SESSION['popupType']; ?>");
-
-    // Clear the session variables after displaying the alert
-    <?php unset($_SESSION['popupMessage']); unset($_SESSION['popupType']); ?>
-</script>
+        // Display alert if session variables exist
+        <?php if (isset($_SESSION['popupMessage']) && isset($_SESSION['popupType'])): ?>
+            alert("<?php echo $_SESSION['popupMessage']; ?>");
+            <?php unset($_SESSION['popupMessage'], $_SESSION['popupType']); ?>
+        <?php endif; ?>
+    </script>
 </body>
-
 </html>
