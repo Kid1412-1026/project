@@ -1,6 +1,23 @@
 <?php
 include("include/config.php");
 session_start();
+
+// Fetch customer information
+function getCustomerInfo($conn, $userId)
+{
+    $stmt = $conn->prepare("SELECT cust_ID, cust_Name, cust_Phone_No FROM customer WHERE userid = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
+
+if (!isset($_SESSION["UID"])) {
+    header("Location: login.php");
+    exit;
+}
+
+$customer = getCustomerInfo($conn, $_SESSION["UID"]);
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +27,7 @@ session_start();
     <title>My Profile</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -22,95 +39,64 @@ session_start();
 
     <nav class="topNav" id="topNav">
         <?php include("include/navMenu.php"); ?>
-        <a href="javascript:void(0);" class="icon" onClick="regulateNavMenu"><i class="fa fa-bars"></i></a>
+        <a href="javascript:void(0);" class="icon" onclick="regulateNavMenu()">
+            <i class="fa fa-bars"></i>
+        </a>
     </nav>
 
     <main>
         <div class="pageTitle">
-            <br>
             <h1>My Profile</h1>
         </div>
 
-        <br><br>
-
-        <?php
-        $cust_ID = "";
-        $cust_Name = "";
-        $cust_Phone_No = "";
-
-        $sql = "SELECT * FROM customer WHERE userid=" . $_SESSION["UID"];
-        $result = mysqli_query($conn, $sql);
-
-        $row = mysqli_fetch_assoc($result);
-        $cust_ID = $row["cust_ID"];
-        $cust_Name = $row["cust_Name"];
-        $cust_Phone_No = $row["cust_Phone_No"];
-
-        ?>
-
-        <table border="1" id="profileTable">
-            <colgroup>
-                <col>
-                <col style="background-color: #FFFFFF">
-            </colgroup>
-            <tr>
-                <td><b>Customer ID</b></td>
-                <td>
-                    <?php
-                    echo $cust_ID;
-                    ?>
-                </td>
-            </tr>
-            <tr>
-                <td><b>Customer Name</b></td>
-                <td>
-                    <?php
-                    echo $cust_Name;
-                    ?>
-                </td>
-            </tr>
-            <tr>
-                <td><b>Customer Contact No</b></td>
-                <td>
-                    <?php
-                    echo $cust_Phone_No;
-                    ?>
-                </td>
-            </tr>
-
-
-        </table>
-
-        <br>
-
-        <div class="profileUpdateButton">
-            <?php
-            echo '<form action="profile_edit.php" method="get">
-        <input type="hidden" name="id" value="' . $cust_ID . '">
-        <button type="submit">Update Profile</button>
-      </form>';
-
-            ?>
-        </div>
-
-
-
-        <table>
-            <form method="POST" action="profile_change_password_action.php" id="insertForm" enctype="multipart/form-data">
+        <?php if ($customer): ?>
+            <table border="1" id="profileTable">
+                <colgroup>
+                    <col>
+                    <col style="background-color: #FFFFFF">
+                </colgroup>
                 <tr>
-                    <td><b>Change Password</b></td>
-                    <td><input type="text" name="chgpassword"></td>
+                    <td><b>Customer ID</b></td>
+                    <td><?= htmlspecialchars($customer['cust_ID']); ?></td>
                 </tr>
                 <tr>
-                <td><input type="submit" value="Change Password" name="Submit"></td>
+                    <td><b>Customer Name</b></td>
+                    <td><?= htmlspecialchars($customer['cust_Name']); ?></td>
                 </tr>
-            </form>
+                <tr>
+                    <td><b>Customer Contact No</b></td>
+                    <td><?= htmlspecialchars($customer['cust_Phone_No']); ?></td>
+                </tr>
             </table>
-                <br><br><br><br><br>
+
+            <div class="profileUpdateButton">
+                <form action="profile_edit.php" method="get">
+                    <input type="hidden" name="id" value="<?= htmlspecialchars($customer['cust_ID']); ?>">
+                    <button type="submit">Update Profile</button>
+                </form>
+            </div>
+
+            <h2>Change Password</h2>
+            <form method="POST" action="profile_change_password_action.php" id="insertForm">
+                <table>
+                    <tr>
+                        <td><label for="chgpassword"><b>New Password:</b></label></td>
+                        <td><input type="password" name="chgpassword" id="chgpassword" required></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="submit" name="Submit">Change Password</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        <?php else: ?>
+            <p style="color: red;">Unable to fetch customer information. Please contact support.</p>
+        <?php endif; ?>
     </main>
 
-    <footer style="position: fixed; bottom: 0;">
-        <h3>@ KK34703 Web Engineering Group Assignment (Group 14) </h3>
+    <footer>
+        <h3>@ KK34703 Web Engineering Group Assignment (Group 14)</h3>
     </footer>
 </body>
 
