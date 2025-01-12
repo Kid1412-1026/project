@@ -1,46 +1,56 @@
 <?php
 session_start();
 include("config.php");
-?>
-<html>
 
-<head>
-    <title>Login Action</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="mystyle.css" media="screen" />
-</head>
+// Function to sanitize user input
+function sanitize_input($conn, $input)
+{
+    return mysqli_real_escape_string($conn, trim($input));
+}
 
-<body>
-    <h2>Login Information</h2>
-    <?php
-    //login values from login form
-    $useremail = $_POST['useremail'];
-    $userPwd = $_POST['userpwd'];
+// Function to display error message
+function display_error($message)
+{
+    echo "<p style='color: red; font-weight: bold;'>$message</p>";
+    echo '<a href="landingpage.php?login=1"> | Login |</a>';
+    exit;
+}
 
+// Get login values from POST request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $useremail = sanitize_input($conn, $_POST['useremail']);
+    $userPwd = sanitize_input($conn, $_POST['userpwd']);
+
+    // Check if user exists
     $sql = "SELECT * FROM user WHERE useremail='$useremail' LIMIT 1";
     $result = mysqli_query($conn, $sql);
 
-    if (mysqli_num_rows($result) == 1) {
-        //check password hash
-        $row = mysqli_fetch_assoc($result);
-        if (password_verify($_POST['userpwd'], $row['userpwd'])) {
-            $_SESSION["UID"] = $row["userid"]; //the first record set, bind to userID
-            $_SESSION["useremail"] = $row["useremail"];
-            //set logged in time
-            $_SESSION['loggedin_time'] = time();
-            header("location:index.php");
-        } else {
-            echo 'Login error, user email and password is incorrect.<br>'; //user email & pwd not correct    
-            echo '<a href="landingpage.php?login=1"> | Login |</a> &nbsp;&nbsp;&nbsp; <br>';
-        }
+    if ($result) {
+        if (mysqli_num_rows($result) === 1) {
+            $row = mysqli_fetch_assoc($result);
 
+            // Verify password
+            if (password_verify($userPwd, $row['userpwd'])) {
+                $_SESSION["UID"] = $row["userid"];
+                $_SESSION["useremail"] = $row["useremail"];
+                $_SESSION['loggedin_time'] = time();
+                header("Location: index.php");
+                exit;
+            } else {
+                display_error("Login error: Incorrect email or password.");
+            }
+        } else {
+            display_error("Login error: User with email <b>$useremail</b> does not exist.");
+        }
     } else {
-        echo "Login error, user <b>$useremail</b> does not exist. <br>"; //user not exist
-        echo '<a href="landingpage.php?login=1"> | Login |</a>&nbsp;&nbsp;&nbsp; <br>';
+        display_error("Database error: Unable to execute the query.");
     }
 
-    mysqli_close($conn);
-    ?>
-</body>
+    mysqli_free_result($result);
+} else {
+    display_error("Invalid request method.");
+}
 
-</html>
+// Close the database connection
+mysqli_close($conn);
+?>
