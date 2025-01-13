@@ -32,4 +32,4 @@ jobs:
       # Step 4: Run the tests
       - name: Run Tests
         run: |
-          vendor/bin/phpunit tests/  # Update the path to your test directory
+          vendor/bin/phpunit test/  # Update the path to your test directory
