@@ -1,3 +1,4 @@
+<? php
 use PHPUnit\Framework\TestCase;
 
 class FormValidationTest extends TestCase {
@@ -16,3 +17,4 @@ class FormValidationTest extends TestCase {
         $this->assertTrue(filter_var($_POST['reportemail'], FILTER_VALIDATE_EMAIL), "Invalid email format");
     }
 }
+?>
