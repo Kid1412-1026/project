@@ -7,7 +7,7 @@
 <html lang="en">
 
 <head>
-    <title>Home</title>
+    <title>Add New Room</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/style.css">       
@@ -35,22 +35,18 @@
         <br>
         <div class="insertRoom">
             <form method="POST" action="room_add_action.php" id="insertForm" enctype="multipart/form-data">
-                <!--<input type="text" id="cid" name="cid" value="<?=$_GET['id']?>" hidden>-->
                 <table border="1" id="roomForm">
-                    <colgroup>
-                        <col>
-                    </colgroup>
                     <tr>
                         <td><b>Room ID</b></td>
                         <td>
-                            <input type="text" name="roomID">
+                            <input type="text" name="roomID" required>
                         </td>
                     </tr>
                     <tr>
                         <td><b>Room Type</b></td>
                         <td>
-                            <select id="roomType" name="roomType">
-                                <option value="None">--Choose Room Type--</option>
+                            <select id="roomType" name="roomType" required>
+                                <option value="">--Choose Room Type--</option>
                                 <option value="Board Room">Board Room</option>
                                 <option value="Breakout Room">Breakout Room</option>
                                 <option value="Conference Room">Conference Room</option>
@@ -63,19 +59,19 @@
                     <tr>
                         <td><b>Room Capacity</b></td>
                         <td>
-                            <input type="number" name="roomCapacity">
+                            <input type="number" name="roomCapacity" required min="1">
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Room Price (Per Hour) </b></td>
+                        <td><b>Room Price (Per Hour)</b></td>
                         <td>
-                            <input type="text" name="roomPrice" value="">
+                            <input type="number" name="roomPrice" required step="0.01" min="0">
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Room Status </b></td>
+                        <td><b>Room Status</b></td>
                         <td>
-                            <select id="roomStatus" name="roomStatus">
+                            <select id="roomStatus" name="roomStatus" required>
                                 <option value="Not Booked">Not Booked</option>
                                 <option value="Booked">Booked</option>
                                 <option value="Occupied">Occupied</option>
@@ -86,8 +82,8 @@
                 <br>
                 <div class="formButton">
                     <input type="submit" value="Submit" name="Submit"> &nbsp;
-                    <input type="reset" value="Reset" name="Reset" onclick="resetForm()"> &nbsp
-                    <input type="button" value="Clear" name="Clear" onclick="clearForm()">
+                    <input type="reset" value="Reset" name="Reset"> &nbsp;
+                    <button type="button" name="Clear" onclick="document.getElementById('insertForm').reset()">Clear</button>
                 </div>
             </form>
         </div>
