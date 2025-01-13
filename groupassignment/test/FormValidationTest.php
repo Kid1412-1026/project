@@ -1,11 +1,11 @@
 <?php
 
+namespace GroupAssignment\Test;
+
 use PHPUnit\Framework\TestCase;
 
-class FormValidationTest extends TestCase
-{
-    public function testFormValidation()
-    {
+class FormValidationTest extends TestCase {
+    public function testFormValidation() {
         // Mock form data
         $_POST['reportname'] = "Test User";
         $_POST['reportemail'] = "test@example.com";
@@ -17,7 +17,7 @@ class FormValidationTest extends TestCase
         $this->assertNotEmpty($_POST['reportmsg'], "Message should not be empty");
 
         // Email validation
-        $this->assertTrue(filter_var($_POST['reportemail'], FILTER_VALIDATE_EMAIL), "Invalid email format");
+        $this->assertNotFalse(filter_var($_POST['reportemail'], FILTER_VALIDATE_EMAIL), "Invalid email format");
     }
 }
 ?>
