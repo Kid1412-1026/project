@@ -7,23 +7,10 @@ session_start();
 <html lang="en">
 
 <head>
-    <title>Home</title>
+    <title>Room List</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script>
-        function updateRoomList() {
-            var roomTypeSelect = document.getElementById('roomType');
-            var roomTableBody = document.querySelector('#adjustable tbody');
-            var selectedRoomType = roomTypeSelect.value;
-
-            // Clear existing rows
-            roomTableBody.innerHTML = '';
-        }
-
-        // Initial room list update
-        updateRoomList();
-    </script>
 </head>
 
 <body>
@@ -35,86 +22,30 @@ session_start();
 
     <nav class="topNav" id="topNav">
         <?php include("include/navMenu.php"); ?>
-        <a href="javascript:void(0);" class="icon" onClick="regulateNavMenu"><i class="fa fa-bars"></i></a>
     </nav>
 
     <main>
         <div class="pageTitle">
             <h1>Room List</h1>
         </div>
+
         <div class="roomList">
-            <div class="option">
+            <div class="filterOption">
                 <form method="POST" id="roomFilter">
-                    <label for="">Room Type: &nbsp;</label>
-                    <select class="room_type_select" id="roomType" name="roomType" value=""
-                        onchange="this.form.submit()">
-                        <?php
-                        $roomType = $_POST['roomType'];
-                        if ($roomType == null) {
-                            echo '<option value="All">All Room</option>';
-                            echo '<option value="Board Room">Board Room</option>';
-                            echo '<option value="Breakout Room">Breakout Room</option>';
-                            echo '<option value="Conference Room">Conference Room</option>';
-                            echo '<option value="Huddle Room">Huddle Room</option>';
-                            echo '<option value="Seminar Room">Seminar Room</option>';
-                            echo '<option value="Video Conference Room">Video Conference Room</option>';
-                        }
-
-                        if (isset($_POST['roomType'])) {
-                            $roomType = $_POST['roomType'];
-                            if ($roomType == "All") {
-                                echo '<option value="All" selected>All Room</option>';
-
-                            } else {
-                                echo '<option value="All">All Room</option>';
-                            }
-
-                            if ($roomType == "Board Room") {
-                                echo '<option value="Board Room" selected>Board Room</option>';
-
-                            } else {
-                                echo '<option value="Board Room">Board Room</option>';
-                            }
-
-                            if ($roomType == "Breakout Room") {
-                                echo '<option value="Breakout Room" selected>Breakout Room</option>';
-                            } else {
-                                echo '<option value="Breakout Room">Breakout Room</option>';
-                            }
-
-                            if ($roomType == "Conference Room") {
-                                echo '<option value="Conference Room" selected>Conference Room</option>';
-                            } else {
-                                echo '<option value="Conference Room">Conference Room</option>';
-                            }
-
-                            if ($roomType == "Huddle Room") {
-                                echo '<option value="Huddle Room" selected>Huddle Room</option>';
-                            } else {
-                                echo '<option value="Huddle Room">Huddle Room</option>';
-                            }
-
-                            if ($roomType == "Seminar Room") {
-                                echo '<option value="Seminar Room" selected>Seminar Room</option>';
-                            } else {
-                                echo '<option value="Seminar Room">Seminar Room</option>';
-                            }
-
-                            if ($roomType == "Video Conference Room") {
-                                echo '<option value="Video Conference Room" selected>Video Conference Room</option>';
-                            } else {
-                                echo '<option value="Video Conference Room">Video Conference Room</option>';
-                            }
-                        }
-                        ?>
+                    <label for="roomType">Room Type:</label>
+                    <select id="roomType" name="roomType" onchange="this.form.submit()">
+                        <option value="All" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'All' ? 'selected' : '' ?>>All Rooms</option>
+                        <option value="Board Room" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'Board Room' ? 'selected' : '' ?>>Board Room</option>
+                        <option value="Breakout Room" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'Breakout Room' ? 'selected' : '' ?>>Breakout Room</option>
+                        <option value="Conference Room" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'Conference Room' ? 'selected' : '' ?>>Conference Room</option>
+                        <option value="Huddle Room" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'Huddle Room' ? 'selected' : '' ?>>Huddle Room</option>
+                        <option value="Seminar Room" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'Seminar Room' ? 'selected' : '' ?>>Seminar Room</option>
+                        <option value="Video Conference Room" <?= isset($_POST['roomType']) && $_POST['roomType'] === 'Video Conference Room' ? 'selected' : '' ?>>Video Conference Room</option>
                     </select>
                 </form>
-
-                &nbsp;
             </div>
 
-            <br>
-            <table border="1" id="adjustable">
+            <table border="1" id="roomTable">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -127,65 +58,37 @@ session_start();
                 </thead>
                 <tbody>
                     <?php
-                    if (isset($_POST['roomType'])) {
-                        $roomType = $_POST['roomType'];
+                    $roomType = isset($_POST['roomType']) ? $_POST['roomType'] : 'All';
 
-                        // Fetch data based on selected room type
-                        if ($roomType == 'All') {
-                            $sql = "SELECT * FROM room";
-                        } else {
-                            $sql = "SELECT * FROM room WHERE room_type = '$roomType'";
+                    $sql = $roomType === 'All' ? "SELECT * FROM room" : "SELECT * FROM room WHERE room_Type = '" . mysqli_real_escape_string($conn, $roomType) . "'";
+                    $result = mysqli_query($conn, $sql);
+
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $counter = 1;
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                            echo "<td>{$counter}</td>";
+                            echo "<td>{$row['room_ID']}</td>";
+                            echo "<td>{$row['room_Type']}</td>";
+                            echo "<td>{$row['room_Capacity']}</td>";
+                            echo "<td>RM {$row['room_Price_Per_Hour']}</td>";
+                            echo "<td>{$row['room_Availability_Status']}</td>";
+                            echo "</tr>";
+                            $counter++;
                         }
-
-                        $result = mysqli_query($conn, $sql);
-
-                        if (mysqli_num_rows($result) > 0) {
-                            $numrow = 1;
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<tr>";
-                                echo "<td>" . $numrow . "</td>";
-                                echo "<td>" . $row['room_ID'] . "</td>";
-                                echo "<td>" . $row['room_Type'] . "</td>";
-                                echo "<td>" . $row['room_Capacity'] . "</td>";
-                                echo "<td>RM" . $row['room_Price_Per_Hour'] . "</td>";
-                                echo "<td>" . $row['room_Availability_Status'] . "</td>";
-                                $numrow++;
-                            }
-                        } else {
-                            echo "<tr><td colspan='7'>No results found</td></tr>";
-                        }
-                        mysqli_close($conn);
-
                     } else {
-                        $sql = "SELECT * FROM room";
-
-                        $result = mysqli_query($conn, $sql);
-
-                        if (mysqli_num_rows($result) > 0) {
-                            $numrow = 1;
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<tr>";
-                                echo "<td>" . $numrow . "</td>";
-                                echo "<td>" . $row['room_ID'] . "</td>";
-                                echo "<td>" . $row['room_Type'] . "</td>";
-                                echo "<td>" . $row['room_Capacity'] . "</td>";
-                                echo "<td>RM" . $row['room_Price_Per_Hour'] . "</td>";
-                                echo "<td>" . $row['room_Availability_Status'] . "</td>";
-                                $numrow++;
-                            }
-                        } else {
-                            echo "<tr><td colspan='7'>No results found</td></tr>";
-                        }
+                        echo "<tr><td colspan='6'>No rooms found.</td></tr>";
                     }
+
+                    mysqli_close($conn);
                     ?>
                 </tbody>
             </table>
         </div>
-        <br><br><br><br><br>
     </main>
 
     <footer>
-        <h3>@ KK34703 Web Engineering Group Assignment (Group 14) </h3>
+        <h3>@ KK34703 Web Engineering Group Assignment (Group 14)</h3>
     </footer>
 </body>
 
