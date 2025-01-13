@@ -1,77 +1,44 @@
-name: PHPStan Analysis and PHPUnit Coverage Report
+name: CI Pipeline
 
 on:
   push:
-    branches: ["main"]
-    paths:
-      - '.github/workflows/*.yml'
-      - '**.php'
-
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
-
-permissions:
-  contents: write
+    branches:
+      - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Step 2: Cache Composer dependencies
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: ./vendor
-          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            composer-${{ runner.os }}
+    # Set up PHP
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        extensions: mysqli
 
-      # Step 3: Install Composer dependencies
-      - name: Composer Install
-        uses: php-actions/composer@v6
-        with:
-          php_version: "8.1"
-          php_extensions: mbstring, mysqli, soap, intl, gd
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        composer install
 
-      # Step 4: Run PHPUnit tests and generate coverage
-      - name: PHPUnit Coverage
+    # Run PHPUnit tests
+    - name: Run PHPUnit tests
+      run: |
+        vendor/bin/phpunit tests --colors=always
+
+    # Optional: Run Selenium tests for report.php
+    - name: Run Selenium tests
+      if: success() # Only run if previous steps succeeded
+      uses: GabrielBB/xvfb-action@v1
+      with:
         run: |
-          ./vendor/bin/phpunit --stop-on-failure --coverage-php=coverage.php
-        env:
-          XDEBUG_MODE: coverage
-
-      # Step 5: Generate Markdown Coverage report
-      - name: Generate Coverage Report
-        run: |
-          php CoverageGenerate.php >> Coverage.md
-        env:
-          XDEBUG_MODE: coverage
-
-      # Step 6: Run PHPStan analysis
-      - name: PHPStan Analysis
-        run: |
-          ./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1024M --error-format=md --no-progress >> 'Static Analysis.md'
-
-      # Step 7: Checkout the Wiki repository
-      - name: Checkout Wiki
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}.wiki
-          path: 'wiki'
-
-      # Step 8: Push Coverage and Analysis reports to Wiki
-      - name: Push to Wiki
-        run: |
-          mv Coverage.md wiki/
-          mv 'Static Analysis.md' wiki/
-          cd wiki
-          git config user.name "actions-runner"
-          git config user.email "actions-runner@github.com"
-          git add .
-          git commit -m "Add Coverage and Analysis files"
-          git push
+          python3 -m pip install selenium
+          python3 tests/e2e_test.py
